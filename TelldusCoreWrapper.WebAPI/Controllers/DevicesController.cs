@@ -18,7 +18,7 @@ namespace TelldusCoreWrapper.WebAPI.Controllers
         }
         
         [HttpGet("/devices/")]
-        public ActionResult<IEnumerable<Device>> Get()
+        public ActionResult<IEnumerable<Device>> GetAll()
         {
             IEnumerable<Device> devices = telldusCoreService.GetDevices();
             return Ok(devices);
@@ -32,13 +32,6 @@ namespace TelldusCoreWrapper.WebAPI.Controllers
                 return NotFound();
 
             return Ok(device);
-        }
-        [HttpPost("/devices/{id}/{command}")]
-        public ActionResult<ResultCode> Get(int id, string command, [FromBody] string parameter = null)
-        {
-            //ResultCode resultCode = telldusCoreService.SendCommand(id, command, parameter);
-            //return Ok(resultCode);
-            return Ok(ResultCode.Success);
         }
 
         //// POST api/values

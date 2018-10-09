@@ -18,11 +18,18 @@ namespace TelldusCoreWrapper.WebAPI.Controllers
             this.telldusCoreService = telldusCoreService;
         }
 
-        [HttpPost("/devices/{id}/{command}")]
-        public ActionResult<ResultCode> Get(int id, DeviceMethods command, string parameter = null)
+        [HttpPost("/devices/{id}/send/{command}")]
+        public ActionResult<ResultCode> SendCommand(int id, DeviceMethods command, string parameter = null)
         {
             ResultCode resultCode = telldusCoreService.SendCommand(id, command, parameter);
             return Ok(resultCode);
+        }
+
+        [HttpGet("/devices/{id}/lastcommand")]
+        public ActionResult<DeviceMethods> GetLastCommand(int id)
+        {
+            DeviceMethods lastCommand = telldusCoreService.GetLastCommand(id);
+            return Ok(lastCommand);
         }
     }
 }
