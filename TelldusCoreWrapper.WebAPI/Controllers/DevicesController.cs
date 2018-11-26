@@ -16,41 +16,38 @@ namespace TelldusCoreWrapper.WebAPI.Controllers
         {
             this.telldusCoreService = telldusCoreService;
         }
-        
+
         [HttpGet("/devices/")]
-        public ActionResult<IEnumerable<Device>> GetAll()
+        public async Task<ActionResult<IEnumerable<Device>>> GetAll()
         {
-            IEnumerable<Device> devices = telldusCoreService.GetDevices();
-            return Ok(devices);
+            return await Task.Factory.StartNew(() =>
+            {
+                IEnumerable<Device> devices = telldusCoreService.GetDevices();
+                return Ok(devices);
+            });
         }
         
         [HttpGet("/devices/{id}")]
-        public ActionResult<Device> Get(int id)
+        public async Task<ActionResult<Device>> Get(int id)
         {
-            Device device = telldusCoreService.GetDevice(id);
-            if (device == null)
-                return NotFound();
+            return await Task.Factory.StartNew<ActionResult<Device>>(() =>
+            {
+                Device device = telldusCoreService.GetDevice(id);
+                if (device == null)
+                    return NotFound();
 
-            return Ok(device);
+                return Ok(device);
+            });
         }
 
-        //// POST api/values
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        //// PUT api/values/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
         [HttpDelete("/devices/{id}")]
-        public ActionResult<bool> Delete(int id)
+        public async Task<ActionResult<bool>> Delete(int id)
         {
-            bool result = telldusCoreService.RemoveDevice(id);
-            return Ok(result);
+            return await Task.Factory.StartNew(() =>
+            {
+                bool result = telldusCoreService.RemoveDevice(id);
+                return Ok(result);
+            });
         }
     }
 }
