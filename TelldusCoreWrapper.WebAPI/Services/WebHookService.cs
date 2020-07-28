@@ -18,6 +18,8 @@ namespace TelldusCoreWrapper.WebAPI.Services
         Task SendSensorWebHook(SensorValue sensorValue);
 
         Task SendDeviceEventWebHook(int deviceId, DeviceMethods command, string parameter);
+
+        Task SendRawCommandWebHook(RawCommandReceivedEventArgs rawCommand);
     }
 
     public class WebhookService : IWebhookService, IDisposable
@@ -78,6 +80,25 @@ namespace TelldusCoreWrapper.WebAPI.Services
                 catch (Exception ex)
                 {
                     logger.LogError(ex, $"Failed to send sensor data to webhook: {url}");
+                }
+            }
+        }
+
+        public async Task SendRawCommandWebHook(RawCommandReceivedEventArgs rawCommand)
+        {
+            string jsonData = JsonConvert.SerializeObject(new { rawCommand.ControllerID, rawCommand.RawData });
+
+            foreach (string url in configuration.GetSection("Webhooks:RawCommands").Get<string[]>())
+            {
+                try
+                {
+                    bool result = await SendData(url, jsonData);
+                    if (!result)
+                        throw new Exception("Invalid response from url");
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to send raw command to webhook: {url}");
                 }
             }
         }

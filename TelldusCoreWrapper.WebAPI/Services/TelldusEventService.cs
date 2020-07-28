@@ -40,6 +40,10 @@ namespace TelldusCoreWrapper.WebAPI.Services
 
         private void TelldusCoreService_RawCommandReceived(object sender, RawCommandReceivedEventArgs e)
         {
+            // always check if webhook is configured
+            webHookService.SendRawCommandWebHook(e);
+
+            // filter for the log
             if (e.Values.ContainsKey("class") && e.Values["class"] == "sensor")
                 return;
 

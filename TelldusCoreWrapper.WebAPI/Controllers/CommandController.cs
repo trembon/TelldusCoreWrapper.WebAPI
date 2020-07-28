@@ -19,14 +19,10 @@ namespace TelldusCoreWrapper.WebAPI.Controllers
         }
 
         [HttpPost("/devices/{id}/send/{command}")]
-        public async Task<ActionResult<ResultCode>> SendCommand(int id, DeviceMethods command, string parameter = null, int retry = 1)
+        public async Task<ActionResult<ResultCode>> SendCommand(int id, DeviceMethods command, string parameter = null)
         {
-            ResultCode latestResultCode = ResultCode.UnknownError;
-
-            for(int i = 0; i < retry; i++)
-                latestResultCode = await Task.Factory.StartNew(() => telldusCoreService.SendCommand(id, command, parameter));
-
-            return Ok(latestResultCode);
+            ResultCode result = await Task.Factory.StartNew(() => telldusCoreService.SendCommand(id, command, parameter));
+            return Ok(result);
         }
 
         [HttpGet("/devices/{id}/lastcommand")]
