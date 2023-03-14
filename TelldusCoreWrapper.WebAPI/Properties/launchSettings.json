@@ -20,7 +20,7 @@
     "TelldusCoreWrapper.WebAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "devices",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

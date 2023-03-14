@@ -1,26 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TelldusCoreWrapper;
+using TelldusCoreWrapper.WebAPI.Services;
 
-namespace TelldusCoreWrapper.WebAPI
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddLogging(options =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+    options.AddConfiguration(builder.Configuration.GetSection("Logging"));
+    options.AddConsole();
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+builder.Services.AddSingleton<IWebhookService, WebhookService>();
+builder.Services.AddSingleton<ITelldusCoreService, TelldusCoreService>();
+builder.Services.AddSingleton<ITelldusEventService, TelldusEventService>();
+
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
+
+app.Services.GetService<ITelldusCoreService>().InitializeInThread(3000);
+app.Services.GetService<ITelldusEventService>().Initialize();
+
+app.MapControllers();
+
+app.Run();
