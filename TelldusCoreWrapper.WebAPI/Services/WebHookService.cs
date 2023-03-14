@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -26,8 +24,8 @@ namespace TelldusCoreWrapper.WebAPI.Services
     {
         private HttpClient httpClient;
         
-        private IConfiguration configuration;
-        private ILogger<WebhookService> logger;
+        private readonly IConfiguration configuration;
+        private readonly ILogger<WebhookService> logger;
 
         public WebhookService(IConfiguration configuration, ILogger<WebhookService> logger)
         {
@@ -105,8 +103,10 @@ namespace TelldusCoreWrapper.WebAPI.Services
 
         private async Task<bool> SendData(string url, string jsonData)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-            request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpRequestMessage request = new(HttpMethod.Post, url)
+            {
+                Content = new StringContent(jsonData, Encoding.UTF8, "application/json")
+            };
 
             HttpResponseMessage response = await httpClient.SendAsync(request);
             return response.StatusCode == HttpStatusCode.OK;

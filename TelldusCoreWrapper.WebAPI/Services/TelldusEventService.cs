@@ -1,8 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TelldusCoreWrapper.Entities;
 
 namespace TelldusCoreWrapper.WebAPI.Services
@@ -14,9 +10,9 @@ namespace TelldusCoreWrapper.WebAPI.Services
 
     public class TelldusEventService : ITelldusEventService
     {
-        private IWebhookService webHookService;
-        private ILogger<TelldusEventService> logger;
-        private ITelldusCoreService telldusCoreService;
+        private readonly IWebhookService webHookService;
+        private readonly ILogger<TelldusEventService> logger;
+        private readonly ITelldusCoreService telldusCoreService;
 
         public TelldusEventService(ITelldusCoreService telldusCoreService, IWebhookService webHookService, ILogger<TelldusEventService> logger)
         {
@@ -44,7 +40,7 @@ namespace TelldusCoreWrapper.WebAPI.Services
             webHookService.SendRawCommandWebHook(e);
 
             // filter for the log
-            if (e.Values.ContainsKey("class") && e.Values["class"] == "sensor")
+            if (e.Values.TryGetValue("class", out string value) && value == "sensor")
                 return;
 
             logger.LogInformation($"Raw data recieved: {e.RawData}");

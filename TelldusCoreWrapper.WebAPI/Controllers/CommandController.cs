@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using TelldusCoreWrapper.Enums;
 
 namespace TelldusCoreWrapper.WebAPI.Controllers
@@ -11,7 +7,7 @@ namespace TelldusCoreWrapper.WebAPI.Controllers
     [ApiController]
     public class CommandController : ControllerBase
     {
-        private ITelldusCoreService telldusCoreService;
+        private readonly ITelldusCoreService telldusCoreService;
 
         public CommandController(ITelldusCoreService telldusCoreService)
         {

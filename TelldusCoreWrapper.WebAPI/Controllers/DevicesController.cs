@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using TelldusCoreWrapper.Entities;
 
 namespace TelldusCoreWrapper.WebAPI.Controllers
@@ -10,7 +8,7 @@ namespace TelldusCoreWrapper.WebAPI.Controllers
     [ApiController]
     public class DevicesController : ControllerBase
     {
-        private ITelldusCoreService telldusCoreService;
+        private readonly ITelldusCoreService telldusCoreService;
 
         public DevicesController(ITelldusCoreService telldusCoreService)
         {
