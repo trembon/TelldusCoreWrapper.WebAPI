@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TelldusCoreWrapper.Enums;
+using TelldusCoreWrapper.WebAPI.Services;
 
 namespace TelldusCoreWrapper.WebAPI.Controllers
 {
@@ -8,21 +9,23 @@ namespace TelldusCoreWrapper.WebAPI.Controllers
     public class CommandController : ControllerBase
     {
         private readonly ITelldusCoreService telldusCoreService;
+        private readonly ITelldusCommandService telldusCommandService;
 
-        public CommandController(ITelldusCoreService telldusCoreService)
+        public CommandController(ITelldusCoreService telldusCoreService, ITelldusCommandService telldusCommandService)
         {
             this.telldusCoreService = telldusCoreService;
+            this.telldusCommandService = telldusCommandService;
         }
 
         [HttpPost("/devices/{id}/send/{command}")]
-        public async Task<ActionResult<ResultCode>> SendCommand(int id, DeviceMethods command, string parameter = null)
+        public async Task<ActionResult> SendCommand(int id, DeviceMethods command, string parameter = null)
         {
-            ResultCode result = await Task.Factory.StartNew(() => telldusCoreService.SendCommand(id, command, parameter));
-            return Ok(result);
+            await telldusCommandService.SendCommand(id, command, parameter);
+            return Ok();
         }
 
         [HttpGet("/devices/{id}/lastcommand")]
-        public async Task<ActionResult<ResultCode>> GetLastCommand(int id)
+        public async Task<ActionResult<DeviceMethods>> GetLastCommand(int id)
         {
             return await Task.Factory.StartNew(() =>
             {

@@ -16,6 +16,7 @@ builder.Services.AddLogging(options =>
 builder.Services.AddSingleton<IWebhookService, WebhookService>();
 builder.Services.AddSingleton<ITelldusCoreService, TelldusCoreService>();
 builder.Services.AddSingleton<ITelldusEventService, TelldusEventService>();
+builder.Services.AddSingleton<ITelldusCommandService, TelldusCommandService>();
 
 builder.Services.AddControllers();
 
